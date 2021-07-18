@@ -38,26 +38,16 @@ def msg_manual_report(user_msg, groupID, userName):
 def msg_report(user_msg, groupID):
     try:
         if ( # 檢查資料是否有填，字數注意有換行符
-            len(user_msg.split('姓名')[-1].split('學號')[0])<3 and
-            len(user_msg.split("學號")[-1].split('手機')[0])<3 and 
-            len(user_msg.split('手機')[-1].split('地點')[0])<12 and 
-            len(user_msg.split('地點')[-1].split('收假方式')[0])<3
-            ):
+            len(user_msg.split('姓名')[-1].split('回報')[0])<3 ):
             raise Exception
         # 得到學號
-        ID = user_msg.split("學號")[-1].split('手機')[0][1:]
-        # 直接完整save學號 -Garrett, 2021.01.28  
+        ID = user_msg.split("姓名")[-1].split('回報')[0][1:]
         ID = str(int(ID)) #先數值再字串，避免換行困擾
-        # 學號不再限定只有5碼 -Garrett, 2021.01.28  
-        #if len(ID)==6:
-        #    ID = int(ID[-4:])
-        #elif len(ID)<=4:
-        #    ID = int(ID)
     except Exception:
-        tmp_str = '姓名、學號、手機、地點，其中一項未填。'       
+        tmp_str = '姓名、回報，其中一項未填。'       
     else:
         reportData[groupID][ID] = user_msg
-        tmp_str = str(ID)+'號弟兄，回報成功。'  
+        tmp_str = str(ID)+'，回報成功。'  
     return tmp_str        
         
 
@@ -67,10 +57,7 @@ def msg_readme():
         '[1]固定格式。\n'
         '----------\n'
         '姓名：\n'
-        '學號：\n'
-        '手機：\n'
-        '地點：\n'
-        '收假方式：\n'
+        '回報：\n'
         '----------\n'
         '\n'
         '[2]開頭帶有自訂回報\n'
@@ -118,7 +105,7 @@ def msg_output(groupID):
         reportData[groupID].clear()
     return tmp_str
 def msg_format():
-    tmp_str = '姓名：\n學號：\n手機：\n地點：\n收假方式：'
+    tmp_str = '姓名：\n回報：\n'
     return tmp_str
     
 def msg_clear(groupID):
@@ -150,7 +137,7 @@ def handle_message(event):
         LineMessage = ''
         receivedmsg = event.message.text
 
-        if '姓名' in receivedmsg and '學號' in receivedmsg and '手機' in receivedmsg:
+        if '姓名' in receivedmsg and '回報' in receivedmsg :
             LineMessage = msg_report(receivedmsg,groupID)
         elif '自訂回報' in receivedmsg[:4]:
             LineMessage = msg_manual_report(receivedmsg,groupID,userName)
